@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Arborescence — Référentiel numérique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1A1A1F;
+    --ink-soft: #6B6B76;
+    --line: #E4E3DD;
+    --paper: #FFFFFF;
+    --bg: #F7F6F2;
+
+    --coral: #C9502F;
+    --blue: #2F5FC9;
+    --amber: #9A7300;
+    --neutral: #4A4A52;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--ink);
+    padding: 2.5rem 1rem;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 2.5rem;
+    border: 1px solid var(--line);
+  }
+
+  /* ===== WINDOW (devenu simple header) ===== */
+  .window {
+    margin-bottom: 3rem;
+  }
+
+  .win-bar { display: none; }
+
+  /* ===== HERO ===== */
+  .hero-body { padding: 0; }
+  .hero-body h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.2;
+    margin: 0 0 10px 0;
+  }
+  .hero-body h1 span { color: var(--coral); }
+  .hero-body p { margin: 0; font-size: 14px; font-weight: 400; color: var(--ink-soft); max-width: 640px; line-height: 1.55; }
+
+  /* ===== LEGEND ===== */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .legend-chip {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+  .legend-chip.them { background: #FBEAE3; color: var(--coral); }
+  .legend-chip.chap { background: #E7EDFB; color: var(--blue); }
+  .legend-chip.comp { background: #F0F0EE; color: var(--neutral); }
+  .legend-chip.trans { background: #FAF3DD; color: var(--amber); }
+  .legend-line { display: inline-block; width: 22px; height: 1px; background: var(--line); border-top: 1px solid #C7C6BE; }
+
+  /* ===== SECTION LABEL ===== */
+  .section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0 0 4px 2px;
+    color: var(--ink);
+  }
+  .section-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 20px 2px; font-weight: 400; }
+
+  /* ===== TREE ===== */
+  .forest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding: 2px;
+  }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--paper);
+    padding: 12px 15px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 190px;
+  }
+
+  .card-tag {
+    align-self: flex-start;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .card-tag.them { background: #FBEAE3; color: var(--coral); }
+  .card-tag.chap { background: #E7EDFB; color: var(--blue); }
+  .card-tag.comp { background: #F0F0EE; color: var(--neutral); }
+  .card-tag.trans { background: #FAF3DD; color: var(--amber); }
+
+  .card-title { font-weight: 600; font-size: 13.5px; }
+  .card-sub { font-size: 10.5px; color: var(--ink-soft); font-weight: 400; line-height: 1.35; }
+
+  .them-card { border-left: 2.5px solid var(--coral); }
+  .chap-card { border-left: 2.5px solid var(--blue); min-width: 170px; }
+  .trans-card { border-left: 2.5px solid var(--amber); }
+
+  .branch {
+    margin-top: 16px;
+    margin-left: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .branch-item {
+    position: relative;
+    padding-left: 24px;
+    margin-top: 16px;
+  }
+  .branch-item:first-child { margin-top: 18px; }
+  .branch-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -16px;
+    bottom: 50%;
+    width: 1px;
+    background: #C7C6BE;
+  }
+  .branch-item:first-child::before { top: -18px; }
+  .branch-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 24px;
+    height: 1px;
+    background: #C7C6BE;
+  }
+
+  details.comp-details { margin-top: 10px; }
+  details.comp-details summary {
+    cursor: pointer;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--blue);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  details.comp-details summary::-webkit-details-marker { display: none; }
+  details.comp-details summary::before {
+    content: "+";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--paper);
+  }
+  details.comp-details[open] summary::before { content: "–"; }
+
+  .comp-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    padding-left: 4px;
+  }
+
+  .comp-pill {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 11px;
+    font-size: 10.5px;
+    font-weight: 400;
+    background: var(--bg);
+    color: var(--ink);
+    max-width: 220px;
+  }
+
+  /* ===== TRANSVERSAL ===== */
+  .trans-row { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 8px; }
+
+  hr.sep { border: none; border-top: 1px solid var(--line); margin: 40px 2px 4px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="window hero">
+    <div class="hero-body">
+      <h1>Arborescence <span>référentiel</span> numérique</h1>
+      <p>Gabarit modulaire — Thématique → Chapitre → Compétence, avec pages transversales. Ce prototype utilise des données factices, puis un exemple rempli avec de vraies données.</p>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-chip them">Thématique</span>niveau 1</div>
+        <div class="legend-item"><span class="legend-chip chap">Chapitre</span>niveau 2</div>
+        <div class="legend-item"><span class="legend-chip comp">Compétence</span>niveau 3 (optionnel, dépliable)</div>
+        <div class="legend-item"><span class="legend-chip trans">Page transversale</span>Métiers, Outils, Certifications</div>
+        <div class="legend-item"><span class="legend-line"></span>relie un élément à ses enfants</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GABARIT -->
+  <p class="section-label">Gabarit</p>
+  <p class="section-note">Structure générique, à dupliquer et renommer pour chaque vraie thématique.</p>
+
+  <div class="forest">
+
+    <div>
+      <div class="card them-card">
+        <span class="card-tag them">Thématique</span>
+        <span class="card-title">Catégorie A</span>
+        <span class="card-sub">Description courte de la thématique</span>
+      </div>
+      <div class="branch">
+        <div class="branch-item">
+          <div class="card chap-card">
+            <span class="card-tag chap">Chapitre</span>
+            <span class="card-title">Sous-catégorie 1</span>
+          </div>
+          <details class="comp-details">
+            <summary>Compétences (2)</summary>
+            <div class="comp-list">
+              <div class="comp-pill">Compétence placeholder 1</div>
+              <div class="comp-pill">Compétence placeholder 2</div>
+            </div>
+          </details>
+        </div>
+        <div class="branch-item">
+          <div class="card chap-card">
+            <span class="card-tag chap">Chapitre</span>
+            <span class="card-title">Sous-catégorie 2</span>
+          </div>
+          <details class="comp-details">
+            <summary>Compétences (1)</summary>
+            <div class="comp-list">
+              <div class="comp-pill">Compétence placeholder 3</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card them-card">
+        <span class="card-tag them">Thématique</span>
+        <span class="card-title">Catégorie B</span>
+        <span class="card-sub">Description courte de la thématique</span>
+      </div>
+      <div class="branch">
+        <div class="branch-item">
+          <div class="card chap-card">
+            <span class="card-tag chap">Chapitre</span>
+            <span class="card-title">Sous-catégorie 1</span>
+          </div>
+          <details class="comp-details">
+            <summary>Compétences (3)</summary>
+            <div class="comp-list">
+              <div class="comp-pill">Compétence placeholder</div>
+              <div class="comp-pill">Compétence placeholder</div>
+              <div class="comp-pill">Compétence placeholder</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-note" style="margin-top:24px;">Pages transversales — non hiérarchiques, reliées à plusieurs éléments de l'arborescence.</p>
+  <div class="trans-row">
+    <div class="card trans-card">
+      <span class="card-tag trans">Page transversale</span>
+      <span class="card-title">Métiers</span>
+      <span class="card-sub">Vue par métier</span>
+    </div>
+    <div class="card trans-card">
+      <span class="card-tag trans">Page transversale</span>
+      <span class="card-title">Outils</span>
+      <span class="card-sub">Vue par logiciel</span>
+    </div>
+    <div class="card trans-card">
+      <span class="card-tag trans">Page transversale</span>
+      <span class="card-title">Certifications</span>
+      <span class="card-sub">Vue par certification</span>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- DONNÉES GRIST (généré dynamiquement) -->
+  <p class="section-label">Référentiel complet</p>
+  <p class="section-note" id="status-note">Connexion à Grist en cours…</p>
+
+  <div class="forest" id="live-forest"></div>
+
+</div>
+
+<script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+<script>
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = (s === null || s === undefined) ? '' : String(s);
+  return d.innerHTML;
+}
+
+function buildThemeCard(theme, chapitres, competencesParChapitre) {
+  var wrap = document.createElement('div');
+
+  var card = document.createElement('div');
+  card.className = 'card them-card';
+  card.innerHTML =
+    '<span class="card-tag them">Thématique</span>' +
+    '<span class="card-title">' + esc(theme.nom) + '</span>';
+  wrap.appendChild(card);
+
+  if (chapitres.length) {
+    var branch = document.createElement('div');
+    branch.className = 'branch';
+
+    chapitres.forEach(function (chap) {
+      var item = document.createElement('div');
+      item.className = 'branch-item';
+
+      var chapCard = document.createElement('div');
+      chapCard.className = 'card chap-card';
+      chapCard.innerHTML =
+        '<span class="card-tag chap">Chapitre</span>' +
+        '<span class="card-title">' + esc(chap.nom) + '</span>';
+      item.appendChild(chapCard);
+
+      var comps = competencesParChapitre[chap.id] || [];
+      if (comps.length) {
+        var details = document.createElement('details');
+        details.className = 'comp-details';
+        var summary = document.createElement('summary');
+        summary.textContent = 'Compétences (' + comps.length + ')';
+        details.appendChild(summary);
+
+        var list = document.createElement('div');
+        list.className = 'comp-list';
+        comps.forEach(function (c) {
+          var pill = document.createElement('div');
+          pill.className = 'comp-pill';
+          pill.textContent = c;
+          list.appendChild(pill);
+        });
+        details.appendChild(list);
+        item.appendChild(details);
+      }
+
+      branch.appendChild(item);
+    });
+
+    wrap.appendChild(branch);
+  }
+
+  return wrap;
+}
+
+async function loadReferentiel() {
+  var statusNote = document.getElementById('status-note');
+  var forest = document.getElementById('live-forest');
+
+  try {
+    var themes = await grist.docApi.fetchTable('Table1');
+    var chapitres = await grist.docApi.fetchTable('Chapitres');
+    var competences = await grist.docApi.fetchTable('Referentiel_dynamique3');
+
+    var chapitresParTheme = {};
+    for (var i = 0; i < chapitres.id.length; i++) {
+      var themeId = chapitres.Thematiques[i];
+      if (!chapitresParTheme[themeId]) chapitresParTheme[themeId] = [];
+      chapitresParTheme[themeId].push({
+        id: chapitres.id[i],
+        nom: chapitres.Chapitre[i]
+      });
+    }
+
+    var competencesParChapitre = {};
+    for (var j = 0; j < competences.id.length; j++) {
+      var chapId = competences.Chapitre[j];
+      if (!competencesParChapitre[chapId]) competencesParChapitre[chapId] = [];
+      competencesParChapitre[chapId].push(competences.Competence_numerique[j]);
+    }
+
+    forest.innerHTML = '';
+    for (var k = 0; k < themes.id.length; k++) {
+      var theme = { id: themes.id[k], nom: themes.Thematique[k] };
+      var sesChapitres = chapitresParTheme[theme.id] || [];
+      forest.appendChild(buildThemeCard(theme, sesChapitres, competencesParChapitre));
+    }
+
+    statusNote.textContent = themes.id.length + ' thématiques, ' + chapitres.id.length + ' chapitres, ' + competences.id.length + ' compétences — données en direct depuis Grist.';
+
+  } catch (err) {
+    statusNote.textContent = 'Erreur de connexion aux données Grist : ' + err.message;
+  }
+}
+
+grist.ready({ requiredAccess: 'read table' });
+grist.onRecords(loadReferentiel);
+loadReferentiel();
+
+</script>
+
+</body>
+</html>
