@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Arborescence — Référentiel numérique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #241E18;
+    --ink-soft: #7A6E60;
+    --paper: #F6EFE4;
+    --card: #FFFFFF;
+
+    --teal: #2A4F4A;
+    --teal-bg: #E3ECE9;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #E9DFCC; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    padding: 2.5rem 1rem;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 22px;
+    padding: 2.75rem;
+    box-shadow: 0 12px 34px rgba(46,36,28,0.14);
+  }
+
+  .window { margin-bottom: 3rem; }
+  .win-bar { display: none; }
+
+  .app-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .app-bar .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .app-bar .icons { display: flex; align-items: center; gap: 10px; }
+  .app-bar .icon-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .app-bar .icon-btn.grid {
+    border-radius: 9px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 26px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(36,30,24,0.14);
+  }
+  .filter-tag {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11.5px;
+    color: var(--ink);
+    background: var(--card);
+    border-radius: 8px;
+    padding: 6px 12px;
+  }
+  .filter-plus {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1px solid rgba(36,30,24,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* ===== HERO ===== */
+  .hero-body { padding: 0; }
+  .hero-body h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-optical-sizing: auto;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 10px 0;
+    color: var(--ink);
+  }
+  .hero-body h1 span { color: var(--terracotta); font-style: italic; }
+  .hero-body p {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    max-width: 600px;
+    line-height: 1.55;
+  }
+
+  /* ===== LEGEND ===== */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(46,36,28,0.14);
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .legend-chip {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .legend-chip.them { background: #F0EADD; color: var(--ink); }
+  .legend-chip.chap { background: var(--teal-bg); color: var(--teal); }
+  .legend-chip.comp { background: var(--teal-bg); color: var(--teal); }
+  .legend-chip.trans { background: #F0EADD; color: var(--ink); }
+  .legend-line { display: inline-block; width: 22px; height: 1px; background: var(--ink-soft); opacity: 0.5; }
+
+  /* ===== SECTION LABEL ===== */
+  .section-label {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 19px;
+    margin: 0 0 4px 2px;
+    color: var(--ink);
+  }
+  .section-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 22px 2px; font-weight: 400; }
+
+  /* ===== TREE ===== */
+  .forest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 2px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 14px 17px 16px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 195px;
+    box-shadow: 0 3px 10px rgba(46,36,28,0.07);
+    position: relative;
+  }
+
+  .card-tag {
+    align-self: flex-start;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .card-tag.them { background: rgba(255,255,255,0.35); color: inherit; }
+  .card-tag.chap { background: var(--teal-bg); color: var(--teal); }
+  .card-tag.comp { background: var(--teal-bg); color: var(--teal); }
+  .card-tag.trans { background: #F0EADD; color: var(--ink); }
+
+  .them-card {
+    min-width: 175px;
+    min-height: 130px;
+    justify-content: flex-end;
+    border-top: none;
+  }
+  .them-card .card-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.2;
+  }
+  .them-card .card-sub { opacity: 0.85; }
+
+  .chap-card {
+    min-width: 175px;
+    background: var(--card);
+    border-top: 3px solid var(--teal);
+  }
+  .chap-card .card-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+
+  .trans-card {
+    background: #F0EADD;
+    border-top: 3px solid var(--ink);
+  }
+  .trans-card .card-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .card-title { color: var(--ink); }
+  .card-sub { font-size: 10.5px; color: var(--ink-soft); font-weight: 400; line-height: 1.35; }
+
+  .branch {
+    margin-top: 18px;
+    margin-left: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .branch-item {
+    position: relative;
+    padding-left: 24px;
+    margin-top: 18px;
+  }
+  .branch-item:first-child { margin-top: 20px; }
+  .branch-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -18px;
+    bottom: 50%;
+    width: 1.5px;
+    background: rgba(36,30,24,0.18);
+  }
+  .branch-item:first-child::before { top: -20px; }
+  .branch-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 24px;
+    height: 1.5px;
+    background: rgba(36,30,24,0.18);
+  }
+
+  details.comp-details { margin-top: 11px; }
+  details.comp-details summary {
+    cursor: pointer;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--teal);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  details.comp-details summary::-webkit-details-marker { display: none; }
+  details.comp-details summary::before {
+    content: "+";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--teal-bg);
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--teal);
+  }
+  details.comp-details[open] summary::before { content: "–"; }
+
+  .comp-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 11px;
+    padding-left: 2px;
+  }
+
+  .comp-pill {
+    border: 1px solid var(--teal);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 10.5px;
+    font-weight: 500;
+    background: var(--teal-bg);
+    color: var(--teal);
+    max-width: 230px;
+  }
+
+  /* ===== TRANSVERSAL ===== */
+  .trans-row { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 8px; }
+
+  hr.sep { border: none; border-top: 1px solid rgba(46,36,28,0.14); margin: 40px 2px 4px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="app-bar">
+    <div class="wordmark">Référentiel</div>
+    <div class="icons">
+      <div class="icon-btn">⌕</div>
+      <div class="icon-btn grid">▦</div>
+      <div class="icon-btn">☰</div>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <div class="filter-tag">Thématique → Chapitre → Compétence</div>
+    <div class="filter-plus">+</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="window hero">
+    <div class="hero-body">
+      <h1>Le catalogue du <span>référentiel numérique</span></h1>
+      <p>Arborescence du référentiel de compétences numériques, organisée par Thématique → Chapitre → Compétence, avec pages transversales. Données en direct depuis Grist.</p>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-chip them">Thématique</span>niveau 1</div>
+        <div class="legend-item"><span class="legend-chip chap">Chapitre</span>niveau 2</div>
+        <div class="legend-item"><span class="legend-chip comp">Compétence</span>niveau 3 (optionnel, dépliable)</div>
+        <div class="legend-item"><span class="legend-chip trans">Page transversale</span>Métiers, Outils, Certifications</div>
+        <div class="legend-item"><span class="legend-line"></span>relie un élément à ses enfants</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DONNÉES GRIST (généré dynamiquement) -->
+  <p class="section-label">Référentiel complet</p>
+  <p class="section-note" id="status-note">Connexion à Grist en cours…</p>
+
+  <div class="forest" id="live-forest"></div>
+
+</div>
+
+<script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+<script>
+
+var PALETTE = [
+  { bg: '#E8A33D', ink: '#241E18' },
+  { bg: '#F2A278', ink: '#241E18' },
+  { bg: '#E2542D', ink: '#FFFFFF' },
+  { bg: '#2A4FAE', ink: '#FFFFFF' },
+  { bg: '#B9C7AE', ink: '#241E18' },
+  { bg: '#16224A', ink: '#FFFFFF' },
+  { bg: '#AFD3E8', ink: '#241E18' },
+  { bg: '#8A5A2E', ink: '#FFFFFF' }
+];
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = (s === null || s === undefined) ? '' : String(s);
+  return d.innerHTML;
+}
+
+function buildThemeCard(theme, chapitres, competencesParChapitre, colorIndex) {
+  var color = PALETTE[colorIndex % PALETTE.length];
+  var wrap = document.createElement('div');
+
+  var card = document.createElement('div');
+  card.className = 'card them-card';
+  card.style.background = color.bg;
+  card.style.color = color.ink;
+  card.innerHTML =
+    '<span class="card-tag them">Thématique</span>' +
+    '<span class="card-title">' + esc(theme.nom) + '</span>' +
+    '<span class="card-sub">' + chapitres.length + ' chapitre' + (chapitres.length > 1 ? 's' : '') + '</span>';
+  wrap.appendChild(card);
+
+  if (chapitres.length) {
+    var branch = document.createElement('div');
+    branch.className = 'branch';
+
+    chapitres.forEach(function (chap) {
+      var item = document.createElement('div');
+      item.className = 'branch-item';
+
+      var chapCard = document.createElement('div');
+      chapCard.className = 'card chap-card';
+      chapCard.style.borderTopColor = color.bg;
+      chapCard.innerHTML =
+        '<span class="card-tag chap">Chapitre</span>' +
+        '<span class="card-title">' + esc(chap.nom) + '</span>';
+      item.appendChild(chapCard);
+
+      var comps = competencesParChapitre[chap.id] || [];
+      if (comps.length) {
+        var details = document.createElement('details');
+        details.className = 'comp-details';
+        var summary = document.createElement('summary');
+        summary.textContent = 'Compétences (' + comps.length + ')';
+        details.appendChild(summary);
+
+        var list = document.createElement('div');
+        list.className = 'comp-list';
+        comps.forEach(function (c) {
+          var pill = document.createElement('div');
+          pill.className = 'comp-pill';
+          pill.textContent = c;
+          list.appendChild(pill);
+        });
+        details.appendChild(list);
+        item.appendChild(details);
+      }
+
+      branch.appendChild(item);
+    });
+
+    wrap.appendChild(branch);
+  }
+
+  return wrap;
+}
+
+async function loadReferentiel() {
+  var statusNote = document.getElementById('status-note');
+  var forest = document.getElementById('live-forest');
+
+  try {
+    var themes = await grist.docApi.fetchTable('Table1');
+    var chapitres = await grist.docApi.fetchTable('Chapitres');
+    var competences = await grist.docApi.fetchTable('Referentiel_dynamique3');
+
+    var chapitresParTheme = {};
+    for (var i = 0; i < chapitres.id.length; i++) {
+      var themeId = chapitres.Thematiques[i];
+      if (!chapitresParTheme[themeId]) chapitresParTheme[themeId] = [];
+      chapitresParTheme[themeId].push({
+        id: chapitres.id[i],
+        nom: chapitres.Chapitre[i]
+      });
+    }
+
+    var competencesParChapitre = {};
+    for (var j = 0; j < competences.id.length; j++) {
+      var chapId = competences.Chapitre[j];
+      if (!competencesParChapitre[chapId]) competencesParChapitre[chapId] = [];
+      competencesParChapitre[chapId].push(competences.Competence_numerique[j]);
+    }
+
+    forest.innerHTML = '';
+    for (var k = 0; k < themes.id.length; k++) {
+      var theme = { id: themes.id[k], nom: themes.Thematique[k] };
+      var sesChapitres = chapitresParTheme[theme.id] || [];
+      forest.appendChild(buildThemeCard(theme, sesChapitres, competencesParChapitre, k));
+    }
+
+    statusNote.textContent = themes.id.length + ' thématiques, ' + chapitres.id.length + ' chapitres, ' + competences.id.length + ' compétences — données en direct depuis Grist.';
+
+  } catch (err) {
+    statusNote.textContent = 'Erreur de connexion aux données Grist : ' + err.message;
+  }
+}
+
+grist.ready({ requiredAccess: 'read table' });
+grist.onRecords(loadReferentiel);
+loadReferentiel();
+
+</script>
+
+</body>
+</html>
