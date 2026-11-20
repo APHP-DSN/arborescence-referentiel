@@ -63,11 +63,7 @@
   <p class="status-note" id="status">Connexion à Grist en cours…</p>
 
   <div class="toolbar">
-    <div class="legend">
-      <span>Peu utilisé</span>
-      <span class="dots" id="legend-dots"></span>
-      <span>Très utilisé</span>
-    </div>
+    <div class="legend"></div>
     <label class="toggle"><input type="checkbox" id="chk-all"> Afficher aussi les outils sans métier</label>
   </div>
 
@@ -100,6 +96,10 @@ async function load(){
     var ts=await grist.docApi.fetchTable(sumId);
     var cM=Object.keys(ts).filter(function(c){return /^Metiers$/i.test(c);})[0];
     var cO=Object.keys(ts).filter(function(c){return /^Logiciels/i.test(c);})[0];
+    var cN=Object.keys(ts).filter(function(c){
+      return c!==cM && c!==cO && c!=='id' && c!=='manualSort' && !/^gristHelper_/i.test(c) &&
+             Array.isArray(ts[c]) && ts[c].length && ts[c].every(function(v){return typeof v==='number';});
+    })[0];
 
     metiers=[];
     for(var i=0;i<tm.id.length;i++) metiers.push({id:tm.id[i],nom:tm.Nom[i]});
@@ -114,7 +114,7 @@ async function load(){
     for(var k=0;k<ts.id.length;k++){
       var mId=ts[cM][k], oId=ts[cO][k];
       if(!mId||!oId||!byId[oId]) continue;
-      var nb=ts.count?ts.count[k]:1;
+      var nb=cN?ts[cN][k]:1;
       byId[oId].perMetier[mId]=(byId[oId].perMetier[mId]||0)+nb;
       byId[oId].total+=nb;
       if(byId[oId].perMetier[mId]>maxNb) maxNb=byId[oId].perMetier[mId];
@@ -133,14 +133,6 @@ function render(){
   var linked=outils.filter(function(o){return o.total>0;});
   var list=showAll?outils:linked;
   var out=document.getElementById('out');
-
-  // légende
-  var ld=document.getElementById('legend-dots');
-  ld.innerHTML='';
-  [0.2,0.5,0.8,1].forEach(function(r){
-    var nb=Math.max(1,Math.round(maxNb*r));
-    ld.innerHTML+='<span class="dot" style="width:'+dotSize(nb)+'px;height:'+dotSize(nb)+'px;opacity:'+dotOpacity(nb)+'"></span>';
-  });
 
   if(!list.length){out.innerHTML='<div class="empty">Aucun outil lié à un métier pour le moment.</div>';return;}
 
