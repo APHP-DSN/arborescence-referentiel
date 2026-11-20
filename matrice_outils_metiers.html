@@ -14,92 +14,142 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#E1EBFA}
   body{font-family:'Inter',sans-serif;color:var(--ink);padding:1.5rem .75rem}
-  .wrap{max-width:1000px;margin:0 auto;background:var(--paper);border-radius:28px;padding:2.5rem 2.5rem 2rem;box-shadow:10px 10px 0 rgba(22,35,61,.06)}
+  .wrap{max-width:1180px;margin:0 auto;background:var(--paper);border-radius:28px;padding:2.5rem 2.5rem 2rem;box-shadow:10px 10px 0 rgba(22,35,61,.06)}
   h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;line-height:1.22;margin:0 0 10px}
   h1 span{color:var(--blue)}
-  p.lead{margin:0 0 22px;font-size:14px;color:var(--ink-soft);max-width:680px;line-height:1.6}
+  p.lead{margin:0 0 22px;font-size:14px;color:var(--ink-soft);max-width:700px;line-height:1.6}
   .status-note{font-size:13px;color:var(--ink-soft);margin:0 0 16px}
 
-  .toolbar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  .toolbar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:flex-end;
     padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:18px}
-  .legend{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft)}
-  .legend .dots{display:flex;align-items:center;gap:6px}
   .toggle{font-size:13px;color:var(--ink);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
   .toggle input{accent-color:var(--blue);width:16px;height:16px}
 
+  .layout{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+  .layout.open{grid-template-columns:minmax(0,1fr) 330px}
   .grid-scroll{overflow-x:auto}
-  table{border-collapse:separate;border-spacing:0;width:100%;min-width:560px}
+  table{border-collapse:separate;border-spacing:0;width:100%;min-width:520px}
   th,td{padding:0}
   thead th{
     font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;
     text-align:center;padding:10px 6px;border-bottom:2px solid var(--line);vertical-align:bottom;
-    cursor:pointer;
   }
-  thead th.corner{text-align:left;cursor:default}
+  thead th.corner{text-align:left}
   tbody th{
     text-align:left;font-weight:600;font-size:13.5px;padding:11px 14px 11px 4px;border-bottom:1px solid var(--line);
-    white-space:nowrap;cursor:pointer;
+    white-space:nowrap;
   }
-  tbody td{text-align:center;border-bottom:1px solid var(--line);height:46px;min-width:92px}
+  tbody td{text-align:center;border-bottom:1px solid var(--line);height:46px;min-width:90px}
   tbody tr.row-hl th,tbody tr.row-hl td{background:var(--hover)}
   td.col-hl,th.col-hl{background:var(--hover)}
   tr.row-hl td.col-hl{background:#E6EFFC}
+  .total{font-size:11px;font-weight:600;color:var(--ink-soft);display:block;margin-top:2px;text-transform:none;letter-spacing:0}
+
   .dot{
     display:inline-flex;align-items:center;justify-content:center;
-    border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:11.5px;
+    width:30px;height:30px;border-radius:50%;
+    background:var(--blue);color:#fff;font-weight:700;font-size:12px;
+    border:0;font-family:inherit;cursor:pointer;
+    transition:transform .12s, box-shadow .12s;
   }
+  .dot:hover{transform:scale(1.12)}
+  .dot:focus-visible{outline:3px solid #9DB8F5;outline-offset:2px}
+  .dot.sel{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--blue)}
   .dash{color:#C7D2E6;font-size:14px}
-  .total{font-size:11px;font-weight:600;color:var(--ink-soft);display:block;margin-top:2px;text-transform:none;letter-spacing:0}
-  .desc{display:block;font-weight:400;font-size:11.5px;color:var(--ink-soft);margin-top:2px;white-space:normal;max-width:260px}
+
   .note{font-size:12.5px;color:var(--ink-soft);margin-top:16px;line-height:1.5}
   .empty{padding:24px 0;color:var(--ink-soft);font-size:14px}
+
+  /* panneau latéral */
+  .panel{display:none;border:1px solid var(--line);border-radius:18px;background:var(--paper);
+    padding:18px 18px 14px;position:sticky;top:12px;box-shadow:0 6px 18px rgba(22,35,61,.07)}
+  .layout.open .panel{display:block}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .panel-title{font-family:'Fraunces',serif;font-weight:600;font-size:18px;line-height:1.25;margin:0}
+  .panel-title .x{color:var(--ink-soft);font-weight:500;padding:0 4px}
+  .panel-close{border:0;background:var(--blue-soft);color:var(--blue);width:28px;height:28px;border-radius:50%;
+    font-size:16px;line-height:1;cursor:pointer;flex:0 0 auto}
+  .panel-count{font-size:12.5px;color:var(--ink-soft);margin:6px 0 12px}
+  .panel-list{list-style:none;margin:0;padding:0;max-height:460px;overflow:auto}
+  .panel-list li{padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.45}
+  .panel-list li:first-child{border-top:0}
+  .panel-list .ctx{display:block;font-size:11px;color:var(--ink-soft);margin-top:3px}
+
+  @media (max-width:860px){
+    .layout.open{grid-template-columns:minmax(0,1fr)}
+    .panel{position:static}
+  }
   @media (max-width:640px){.wrap{padding:1.5rem 1rem}h1{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Outils <span>par métier</span></h1>
-  <p class="lead">Lisez d'un coup d'œil quels outils numériques concernent quel métier. Le chiffre dans le cercle indique sur combien de compétences du référentiel l'outil est utilisé pour ce métier.</p>
+  <p class="lead">Lisez d'un coup d'œil quels outils numériques concernent quel métier. Le chiffre dans le cercle indique le nombre de compétences concernées&nbsp;: cliquez dessus pour voir la liste.</p>
   <p class="status-note" id="status">Connexion à Grist en cours…</p>
 
   <div class="toolbar">
-    <div class="legend"></div>
     <label class="toggle"><input type="checkbox" id="chk-all"> Afficher aussi les outils sans métier</label>
   </div>
 
-  <div class="grid-scroll"><div id="out"></div></div>
-  <p class="note" id="note"></p>
+  <div class="layout" id="layout">
+    <div>
+      <div class="grid-scroll"><div id="out"></div></div>
+      <p class="note" id="note"></p>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite">
+      <div class="panel-head">
+        <h2 class="panel-title" id="panel-title"></h2>
+        <button class="panel-close" id="panel-close" title="Fermer" aria-label="Fermer">×</button>
+      </div>
+      <p class="panel-count" id="panel-count"></p>
+      <ul class="panel-list" id="panel-list"></ul>
+    </aside>
+  </div>
 </div>
 
 <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
 <script>
 function esc(s){var d=document.createElement('div');d.textContent=(s==null)?'':String(s);return d.innerHTML;}
 
-var metiers=[];   // [{id, nom}]
-var outils=[];    // [{id, nom, description, perMetier:{metierId:nb}, total}]
-var maxNb=1;
-
-function dotSize(nb){
-  var min=22, max=38;
-  return Math.round(min+(max-min)*(nb/maxNb));
+// Les listes Grist arrivent sous la forme ['L', 1, 2, 3]
+function asList(v){
+  if(!Array.isArray(v)) return (v==null||v===0||v==='')?[]:[v];
+  return (v[0]==='L')?v.slice(1):v;
 }
-function dotOpacity(nb){ return (0.35+0.65*(nb/maxNb)).toFixed(2); }
+function textOf(v){ return (typeof v==='string')?v:''; }
+
+var metiers=[];   // [{id, nom}]
+var outils=[];    // [{id, nom, description, perMetier:{metierId:[compétence,...]}, total}]
+var selected=null; // {oId, mId}
 
 async function load(){
   var st=document.getElementById('status');
   try{
     var tables=await grist.docApi.listTables();
-    var sumId=tables.filter(function(t){return /^Matrice_metiers_competences_summary/i.test(t)&&/Logiciels/i.test(t);})[0];
-    if(!sumId) throw new Error('table récapitulative Métier–Logiciel introuvable');
+    var matId=tables.filter(function(t){return /^Matrice_metiers_competences$/i.test(t);})[0]
+           || tables.filter(function(t){return /^Matrice_metiers/i.test(t) && !/summary/i.test(t);})[0];
+    if(!matId) throw new Error('table « Matrice métiers-compétences » introuvable');
+    var refId=tables.filter(function(t){return /^Referentiel_dynamique/i.test(t);})[0];
+
     var tm=await grist.docApi.fetchTable('Metiers');
     var to=await grist.docApi.fetchTable('Outils');
-    var ts=await grist.docApi.fetchTable(sumId);
-    var cM=Object.keys(ts).filter(function(c){return /^Metiers$/i.test(c);})[0];
-    var cO=Object.keys(ts).filter(function(c){return /^Logiciels/i.test(c);})[0];
-    var cN=Object.keys(ts).filter(function(c){
-      return c!==cM && c!==cO && c!=='id' && c!=='manualSort' && !/^gristHelper_/i.test(c) &&
-             Array.isArray(ts[c]) && ts[c].length && ts[c].every(function(v){return typeof v==='number';});
-    })[0];
+    var tx=await grist.docApi.fetchTable(matId);
+    var tr=refId?await grist.docApi.fetchTable(refId):null;
+
+    var keys=Object.keys(tx);
+    var cM=keys.filter(function(c){return /^Metiers$/i.test(c);})[0];
+    var cO=keys.filter(function(c){return /^Logiciels/i.test(c);})[0];
+    var cC=keys.filter(function(c){return /^Competence/i.test(c);})[0];
+    var cT=keys.filter(function(c){return /^Th[eé]matique$/i.test(c);})[0];
+    var cH=keys.filter(function(c){return /^Chapitre$/i.test(c);})[0];
+    if(!cM||!cO) throw new Error('colonnes Métiers / Logiciels_liés introuvables');
+
+    var compNom={};
+    if(tr){
+      var rc=Object.keys(tr).filter(function(c){return /^Competence/i.test(c);})[0];
+      if(rc) for(var q=0;q<tr.id.length;q++) compNom[tr.id[q]]=tr[rc][q];
+    }
 
     metiers=[];
     for(var i=0;i<tm.id.length;i++) metiers.push({id:tm.id[i],nom:tm.Nom[i]});
@@ -110,17 +160,26 @@ async function load(){
       var o={id:to.id[j],nom:to.Nom[j],description:to.Description?to.Description[j]:'',perMetier:{},total:0};
       byId[o.id]=o; outils.push(o);
     }
-    maxNb=1;
-    for(var k=0;k<ts.id.length;k++){
-      var mId=ts[cM][k], oId=ts[cO][k];
-      if(!mId||!oId||!byId[oId]) continue;
-      var nb=cN?ts[cN][k]:1;
-      byId[oId].perMetier[mId]=(byId[oId].perMetier[mId]||0)+nb;
-      byId[oId].total+=nb;
-      if(byId[oId].perMetier[mId]>maxNb) maxNb=byId[oId].perMetier[mId];
+
+    for(var k=0;k<tx.id.length;k++){
+      var ms=asList(tx[cM][k]), os=asList(tx[cO][k]);
+      if(!ms.length||!os.length) continue;
+      var cid=cC?tx[cC][k]:null;
+      var nom=(typeof cid==='string')?cid:(compNom[cid]||('Compétence n°'+cid));
+      var comp={nom:nom,them:cT?textOf(tx[cT][k]):'',chap:cH?textOf(tx[cH][k]):''};
+      os.forEach(function(oId){
+        var o=byId[oId]; if(!o) return;
+        ms.forEach(function(mId){
+          (o.perMetier[mId]=o.perMetier[mId]||[]).push(comp);
+        });
+      });
     }
+    outils.forEach(function(o){
+      var n=0; for(var m in o.perMetier) n+=o.perMetier[m].length;
+      o.total=n;
+    });
     outils.sort(function(a,b){return b.total-a.total || String(a.nom).localeCompare(String(b.nom),'fr');});
-    st.textContent='';
+
     st.style.display='none';
     render();
   }catch(e){
@@ -145,11 +204,11 @@ function render(){
   list.forEach(function(o,ri){
     h+='<tr data-row="'+ri+'"><th title="'+esc(o.description||'')+'">'+esc(o.nom)+'</th>';
     metiers.forEach(function(m,ci){
-      var nb=o.perMetier[m.id];
-      if(nb){
-        var s=dotSize(nb);
-        h+='<td data-col="'+ci+'" title="'+esc(o.nom)+' × '+esc(m.nom)+' : '+nb+' compétence'+(nb>1?'s':'')+'">'+
-           '<span class="dot" style="width:'+s+'px;height:'+s+'px;opacity:'+dotOpacity(nb)+'">'+nb+'</span></td>';
+      var c=o.perMetier[m.id];
+      if(c&&c.length){
+        var isSel=selected&&selected.oId===o.id&&selected.mId===m.id;
+        h+='<td data-col="'+ci+'"><button class="dot'+(isSel?' sel':'')+'" data-o="'+o.id+'" data-m="'+m.id+'" '+
+           'title="'+esc(o.nom)+' × '+esc(m.nom)+' : '+c.length+' compétence'+(c.length>1?'s':'')+'">'+c.length+'</button></td>';
       }else{
         h+='<td data-col="'+ci+'"><span class="dash">–</span></td>';
       }
@@ -164,31 +223,58 @@ function render(){
     linked.length+' outil'+(linked.length>1?'s':'')+' lié'+(linked.length>1?'s':'')+' à au moins un métier'+
     (unlinked>0?' — '+unlinked+' outil'+(unlinked>1?'s':'')+' du référentiel '+(unlinked>1?'ne sont':'n\'est')+' rattaché'+(unlinked>1?'s':'')+' à aucune compétence.':'.');
 
-  bindHighlight();
+  bindTable();
 }
 
-function bindHighlight(){
+function bindTable(){
   var tbl=document.querySelector('table'); if(!tbl) return;
-  var rows=tbl.querySelectorAll('tbody tr');
-  function clear(){
-    tbl.querySelectorAll('.row-hl,.col-hl').forEach(function(e){e.classList.remove('row-hl','col-hl');});
-  }
-  function hl(ri,ci){
-    clear();
-    if(ri!=null && rows[ri]) rows[ri].classList.add('row-hl');
-    if(ci!=null) tbl.querySelectorAll('[data-col="'+ci+'"]').forEach(function(e){e.classList.add('col-hl');});
-  }
+  function clear(){tbl.querySelectorAll('.row-hl,.col-hl').forEach(function(e){e.classList.remove('row-hl','col-hl');});}
   tbl.addEventListener('mouseover',function(e){
     var td=e.target.closest('td,th'); if(!td) return;
     var tr=td.parentElement;
-    var ri=tr.hasAttribute('data-row')?parseInt(tr.getAttribute('data-row')):null;
-    var ci=td.hasAttribute('data-col')?parseInt(td.getAttribute('data-col')):null;
-    hl(ri,ci);
+    clear();
+    if(tr.hasAttribute('data-row')) tr.classList.add('row-hl');
+    if(td.hasAttribute('data-col')){
+      var ci=td.getAttribute('data-col');
+      tbl.querySelectorAll('[data-col="'+ci+'"]').forEach(function(x){x.classList.add('col-hl');});
+    }
   });
   tbl.addEventListener('mouseleave',clear);
+  tbl.addEventListener('click',function(e){
+    var b=e.target.closest('.dot'); if(!b) return;
+    var oId=parseInt(b.getAttribute('data-o')), mId=parseInt(b.getAttribute('data-m'));
+    if(selected&&selected.oId===oId&&selected.mId===mId){closePanel();return;}
+    selected={oId:oId,mId:mId};
+    tbl.querySelectorAll('.dot.sel').forEach(function(x){x.classList.remove('sel');});
+    b.classList.add('sel');
+    openPanel();
+  });
 }
 
-document.getElementById('chk-all').addEventListener('change',render);
+function openPanel(){
+  var o=outils.filter(function(x){return x.id===selected.oId;})[0];
+  var m=metiers.filter(function(x){return x.id===selected.mId;})[0];
+  var comps=(o&&o.perMetier[selected.mId])||[];
+  comps=comps.slice().sort(function(a,b){
+    return (a.them+a.chap).localeCompare(b.them+b.chap,'fr') || String(a.nom).localeCompare(String(b.nom),'fr');
+  });
+  document.getElementById('panel-title').innerHTML=esc(m?m.nom:'')+'<span class="x">×</span>'+esc(o?o.nom:'');
+  document.getElementById('panel-count').textContent=
+    comps.length+' compétence'+(comps.length>1?'s':'')+' concernée'+(comps.length>1?'s':'');
+  document.getElementById('panel-list').innerHTML=comps.map(function(c){
+    var ctx=[c.them,c.chap].filter(Boolean).join(' › ');
+    return '<li>'+esc(c.nom)+(ctx?'<span class="ctx">'+esc(ctx)+'</span>':'')+'</li>';
+  }).join('');
+  document.getElementById('layout').classList.add('open');
+}
+function closePanel(){
+  selected=null;
+  document.getElementById('layout').classList.remove('open');
+  document.querySelectorAll('.dot.sel').forEach(function(x){x.classList.remove('sel');});
+}
+
+document.getElementById('panel-close').addEventListener('click',closePanel);
+document.getElementById('chk-all').addEventListener('change',function(){closePanel();render();});
 grist.ready({requiredAccess:'full'});
 load();
 </script>
